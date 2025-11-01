@@ -1,4 +1,3 @@
-// app/api/generate-pdf/route.ts
 import { NextRequest } from 'next/server';
 import chromium from '@sparticuz/chromium';
 import puppeteer from 'puppeteer-core';
@@ -16,15 +15,14 @@ export async function POST(req: NextRequest) {
     const p = await req.json();
     const ensure = (x: any, d: any) => (x === undefined || x === null ? d : x);
 
-    // ----- embed logo as data URL so it always renders in PDF -----
-    // If the file is missing, fall back to an empty 1x1 PNG.
+    // Read and inline the logo so PDF always shows it
     let logoDataUrl = '';
     try {
       const logoPath = path.join(process.cwd(), 'public', 'images', 'logo.png');
       const bytes = fs.readFileSync(logoPath);
       logoDataUrl = `data:image/png;base64,${bytes.toString('base64')}`;
     } catch {
-      // 1x1 transparent PNG
+      // 1x1 transparent PNG fallback
       logoDataUrl =
         'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIW2P4//8/AwAI/AL+v4gq5wAAAABJRU5ErkJggg==';
     }
@@ -59,20 +57,28 @@ export async function POST(req: NextRequest) {
       amount_in_words: ensure(p.amount_in_words, ''),
       notes: ensure(p.notes, ''),
 
-      // pass logo data-url into template
       logo_data_url: logoDataUrl,
     };
 
     const html = buildHtml(data);
 
-    // ----- Vercel/Sparticuz recommended flags -----
+    // Ensure we use the Lambda-compatible Chromium
     chromium.setHeadlessMode = true;
     chromium.setGraphicsMode = false;
+    const execPath = await chromium.executablePath();
 
     const browser = await puppeteer.launch({
-      args: chromium.args,
+      args: [
+        ...chromium.args,
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-gpu',
+        '--single-process',
+        '--no-zygote',
+      ],
       defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath(), // resolves to /tmp/chromium in Lambda
+      executablePath: execPath,
       headless: chromium.headless,
     });
 
@@ -87,7 +93,7 @@ export async function POST(req: NextRequest) {
 
     await browser.close();
 
-    // Node runtime: return a Buffer to Response
+    // Node runtime: send a Buffer
     const nodeBuffer = Buffer.from(pdf);
 
     return new Response(nodeBuffer as any, {
@@ -97,7 +103,6 @@ export async function POST(req: NextRequest) {
       },
     });
   } catch (e: any) {
-    // surface launch errors like libnss3.so issues
     return new Response(e?.message || 'Error', { status: 500 });
   }
 }
