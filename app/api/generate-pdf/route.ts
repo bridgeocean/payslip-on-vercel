@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server';
 import JSZip from 'jszip';
 import chromium from '@sparticuz/chromium';
 import puppeteer from 'puppeteer-core';
-import { buildHtml } from '@/lib/template';
+import { buildHtml } from '../../../lib/template';
 
 export const runtime = 'nodejs';
 
