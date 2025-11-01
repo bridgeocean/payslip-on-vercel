@@ -21,8 +21,7 @@ export default function Page() {
     provident_fund: '0',
     unpaid_leaves: '0',
     amount_in_words: 'Seventy Two Thousand Only',
-    notes:
-      'Reimbursement paid for dates 28-Oct-25, 29-Oct-25 and first two records from date 21-Oct-25.',
+    notes: 'Reimbursement paid for dates 28-Oct-25, 29-Oct-25 and first two records from date 21-Oct-25.'
   });
 
   const gross = useMemo(
@@ -48,12 +47,13 @@ export default function Page() {
       unpaid_leaves: toNum(f.unpaid_leaves),
       gross_earnings: gross,
       total_deductions: deductions,
-      net_payable: net,
+      net_payable: net
     };
+
     const res = await fetch('/api/generate-pdf', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(payload)
     });
     if (!res.ok) return alert(await res.text());
     const blob = await res.blob();
@@ -83,7 +83,7 @@ export default function Page() {
   return (
     <main style={{ padding: 24, maxWidth: 980, margin: '0 auto' }}>
       <h2>Bridgeocean — Payslip Generator</h2>
-      <p>Fill the fields and click <b>Generate PDF</b>. The payslip includes the <b>Employee’s Number</b> block.</p>
+      <p>Fill the fields and click <b>Generate PDF</b>. Includes the <b>Employee’s Number</b> block.</p>
 
       <Row>
         <Field label="Company Name" value={f.company_name} onChange={set('company_name')} />
@@ -168,7 +168,7 @@ export default function Page() {
           Generate PDF
         </button>
         <small style={{ color: '#666', marginLeft: 12 }}>
-          The logo is embedded automatically from <code>/public/images/logo.png</code>.
+          Logo: put a PNG at <code>/public/images/logo.png</code>.
         </small>
       </div>
     </main>
