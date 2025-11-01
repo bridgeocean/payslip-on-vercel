@@ -24,7 +24,6 @@ export async function POST(req: NextRequest) {
       paid_days: ensure(p.paid_days, '—'),
       pay_date: ensure(p.pay_date, '—'),
       loss_of_pay_days: ensure(p.loss_of_pay_days, 0),
-
       basic_amount: fmtNG(ensure(p.basic_amount, 0)),
       internet_amount: fmtNG(ensure(p.internet_amount, 0)),
       transport_amount: fmtNG(ensure(p.transport_amount, 0)),
@@ -38,10 +37,7 @@ export async function POST(req: NextRequest) {
       provident_fund: fmtNG(ensure(p.provident_fund, 0)),
       unpaid_leaves: fmtNG(ensure(p.unpaid_leaves, 0)),
       total_deductions: fmtNG(
-        ensure(
-          p.total_deductions,
-          (p.income_tax || 0) + (p.provident_fund || 0) + (p.unpaid_leaves || 0)
-        )
+        ensure(p.total_deductions, (p.income_tax || 0) + (p.provident_fund || 0) + (p.unpaid_leaves || 0))
       ),
       net_payable: fmtNG(ensure(p.net_payable, 0)),
       amount_in_words: ensure(p.amount_in_words, ''),
@@ -68,7 +64,7 @@ export async function POST(req: NextRequest) {
 
     await browser.close();
 
-    // ✅ Node runtime: return a Buffer (avoids Blob/ArrayBuffer type issues)
+    // ✅ Node runtime: send a Buffer directly (no Blob/ArrayBuffer types involved)
     const nodeBuffer = Buffer.from(pdf); // pdf is Uint8Array
 
     return new Response(nodeBuffer as any, {
