@@ -9,9 +9,9 @@
     "resolveJsonModule": true,
     "jsx": "preserve",
     "types": ["node"],
-
-    "baseUrl": ".",                         // ✅ add this line
-    "paths": { "@/*": ["./*"] }             // ✅ and this line
+    "baseUrl": ".",
+    "paths": { "@/*": ["./*"] },
+    "skipLibCheck": true
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"]
 }
