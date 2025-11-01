@@ -1,3 +1,4 @@
+import { buildHtml } from '../../../lib/template';
 export function buildHtml(data: Record<string, any>) {
   const esc = (s: any) =>
     String(s ?? '')
