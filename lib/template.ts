@@ -40,7 +40,7 @@ export function buildHtml(data: Record<string, any>) {
 <body>
   <div class="header">
     <div class="brand">
-      <img class="logo" src="/images/logo.png" alt="logo"/>
+      <img class="logo" src="${d.logo_data_url}" alt="logo"/>
       <div>
         <div class="company">${d.company_name}</div>
         <div class="small">${d.company_address}</div>
