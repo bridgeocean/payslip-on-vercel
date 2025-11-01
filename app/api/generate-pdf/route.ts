@@ -58,8 +58,11 @@ export async function POST(req: NextRequest) {
       margin: { top: '20mm', bottom: '20mm', left: '12mm', right: '12mm' }
     });
     await browser.close();
+    
+    // Wrap the bytes so Response() gets a BodyInit it likes
+    const pdfBlob = new Blob([pdf], { type: 'application/pdf' });
 
-    return new Response(pdf, {
+    return new Response(pdfBlob, {
       headers: {
         'Content-Type': 'application/pdf',
         'Content-Disposition': `attachment; filename="payslip-${data.employee_number}-${data.payslip_month}.pdf"`
