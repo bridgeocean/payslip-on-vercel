@@ -1,4 +1,3 @@
-// lib/template.ts
 export function buildHtml(data: Record<string, any>) {
   const esc = (s: any) =>
     String(s ?? '')
@@ -8,15 +7,6 @@ export function buildHtml(data: Record<string, any>) {
 
   const d: any = {};
   for (const [k, v] of Object.entries(data)) d[k] = typeof v === 'string' ? esc(v) : v;
-
-  const fmt = (n: any) => esc(n);
-
-  const earnRows = (d.earnings || [])
-    .map((r: any) => `<tr><td>${esc(r.label)}</td><td class="rightText">₦ ${fmt(r.amount)}</td></tr>`)
-    .join('');
-  const dedRows = (d.deductions || [])
-    .map((r: any) => `<tr><td>${esc(r.label)}</td><td class="rightText">₦ ${fmt(r.amount)}</td></tr>`)
-    .join('');
 
   return `<!doctype html>
 <html>
@@ -79,14 +69,18 @@ export function buildHtml(data: Record<string, any>) {
     <div>
       <table>
         <tr><th style="text-align:left">Earnings</th><th class="rightText">Amount</th></tr>
-        ${earnRows}
+        <tr><td>Basic</td><td class="rightText">₦ ${d.basic_amount}</td></tr>
+        <tr><td>Internet and communication</td><td class="rightText">₦ ${d.internet_amount}</td></tr>
+        <tr><td>Transport reimbursement</td><td class="rightText">₦ ${d.transport_amount}</td></tr>
         <tr><td><strong>Gross Earnings</strong></td><td class="rightText"><strong>₦ ${d.gross_earnings}</strong></td></tr>
       </table>
     </div>
     <div>
       <table>
         <tr><th style="text-align:left">Deductions</th><th class="rightText">Amount</th></tr>
-        ${dedRows}
+        <tr><td>Income Tax</td><td class="rightText">₦ ${d.income_tax}</td></tr>
+        <tr><td>Provident Fund</td><td class="rightText">₦ ${d.provident_fund}</td></tr>
+        <tr><td>Unpaid Leaves</td><td class="rightText">₦ ${d.unpaid_leaves}</td></tr>
         <tr><td><strong>Total Deductions</strong></td><td class="rightText"><strong>₦ ${d.total_deductions}</strong></td></tr>
       </table>
     </div>
