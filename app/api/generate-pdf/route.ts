@@ -38,7 +38,10 @@ export async function POST(req: NextRequest) {
       provident_fund: fmtNG(ensure(p.provident_fund, 0)),
       unpaid_leaves: fmtNG(ensure(p.unpaid_leaves, 0)),
       total_deductions: fmtNG(
-        ensure(p.total_deductions, (p.income_tax || 0) + (p.provident_fund || 0) + (p.unpaid_leaves || 0))
+        ensure(
+          p.total_deductions,
+          (p.income_tax || 0) + (p.provident_fund || 0) + (p.unpaid_leaves || 0)
+        )
       ),
       net_payable: fmtNG(ensure(p.net_payable, 0)),
       amount_in_words: ensure(p.amount_in_words, ''),
