@@ -1,6 +1,6 @@
 export const metadata = {
   title: 'Bridgeocean — Payslip Generator',
-  description: 'Generate payslips as PDF (Vercel + Puppeteer).'
+  description: 'Generate payslips as PDF (Vercel + Puppeteer).',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
