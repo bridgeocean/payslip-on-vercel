@@ -1,3 +1,4 @@
+// app/api/generate-pdf/route.ts
 import { NextRequest } from 'next/server';
 import chromium from '@sparticuz/chromium';
 import puppeteer from 'puppeteer-core';
@@ -28,7 +29,10 @@ export async function POST(req: NextRequest) {
       internet_amount: fmtNG(ensure(p.internet_amount, 0)),
       transport_amount: fmtNG(ensure(p.transport_amount, 0)),
       gross_earnings: fmtNG(
-        ensure(p.gross_earnings, (p.basic_amount || 0) + (p.internet_amount || 0) + (p.transport_amount || 0))
+        ensure(
+          p.gross_earnings,
+          (p.basic_amount || 0) + (p.internet_amount || 0) + (p.transport_amount || 0)
+        )
       ),
       income_tax: fmtNG(ensure(p.income_tax, 0)),
       provident_fund: fmtNG(ensure(p.provident_fund, 0)),
@@ -52,14 +56,16 @@ export async function POST(req: NextRequest) {
 
     const page = await browser.newPage();
     await page.setContent(html, { waitUntil: ['load', 'networkidle0'] });
+
     const pdf = await page.pdf({
       format: 'A4',
       printBackground: true,
       margin: { top: '20mm', bottom: '20mm', left: '12mm', right: '12mm' }
     });
+
     await browser.close();
-    
-    // Wrap the bytes so Response() gets a BodyInit it likes
+
+    // ✅ FIX: wrap the Uint8Array in a Blob so Response() gets a BodyInit it accepts
     const pdfBlob = new Blob([pdf], { type: 'application/pdf' });
 
     return new Response(pdfBlob, {
