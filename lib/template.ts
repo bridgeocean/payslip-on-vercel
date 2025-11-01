@@ -1,4 +1,4 @@
-import { buildHtml } from '../../../lib/template';
+// lib/template.ts
 export function buildHtml(data: Record<string, any>) {
   const esc = (s: any) =>
     String(s ?? '')
