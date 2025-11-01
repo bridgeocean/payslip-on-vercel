@@ -64,20 +64,16 @@ export async function POST(req: NextRequest) {
     });
 
     await browser.close();
-    
-    // ✅ Convert the Uint8Array to a plain ArrayBuffer that Response() accepts
-    const arrayBuffer: ArrayBuffer = pdf.buffer.slice(
-      pdf.byteOffset,
-      pdf.byteOffset + pdf.byteLength
-    );
 
-    return new Response(arrayBuffer, {
+    // ✅ Node runtime: return a Buffer (avoids Blob/ArrayBuffer type issues)
+    const nodeBuffer = Buffer.from(pdf); // pdf is Uint8Array
+
+    return new Response(nodeBuffer as any, {
       headers: {
         'Content-Type': 'application/pdf',
         'Content-Disposition': `attachment; filename="payslip-${data.employee_number}-${data.payslip_month}.pdf"`
       }
     });
-
   } catch (e: any) {
     return new Response(e?.message || 'Error', { status: 500 });
   }
