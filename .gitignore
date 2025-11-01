@@ -1,0 +1,15 @@
+cat > .gitignore <<'EOF'
+# dependencies
+node_modules
+# next build output
+.next
+out
+# env
+.env
+.env.*
+# vercel
+.vercel
+# OS
+.DS_Store
+Thumbs.db
+EOF
