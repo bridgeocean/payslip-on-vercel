@@ -1,3 +1,4 @@
+import './globals.css';
 export const metadata = {
   title: 'Bridgeocean — Payslip Generator',
   description: 'Generate payslips as PDF (Vercel + Puppeteer).'
